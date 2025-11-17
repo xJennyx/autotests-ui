@@ -1,10 +1,7 @@
-from playwright.sync_api import sync_playwright
-import pytest
+from playwright.sync_api import sync_playwright, expect
 
 
-@pytest.mark.regression
-@pytest.mark.registration
-def test_successful_registration():
+def test_empty_courses_list():
 
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=False)
@@ -31,4 +28,10 @@ def test_successful_registration():
         context = browser.new_context(storage_state='browser-state.json')
         page = context.new_page()
 
-        page.goto('https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/dashboard')
+        page.goto('https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/courses')
+
+        courses_header = page.get_by_test_id('courses-list-toolbar-title-text')
+        expect(courses_header).to_have_text('Courses')
+
+        no_results_text = page.get_by_test_id('courses-list-empty-view-title-text')
+        expect(no_results_text).to_have_text('There is no results')
