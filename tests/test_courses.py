@@ -18,11 +18,14 @@ def test_empty_courses_list(courses_list_page):
 def test_create_course(courses_list_page, create_course_page):
     create_course_page.visit('https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/courses/create')
     create_course_page.create_course_toolbar.check_visible(is_create_course_disabled=True)
-    create_course_page.image_upload_widget.check_visible(is_image_uploaded=False)
+    create_course_page.image_upload_widget.check_visible(is_image_uploaded=False, identifier='create-course-preview')
     create_course_page.create_exercise_course_toolbar.check_visible()
     create_course_page.check_visible_exercises_empty_view()
-    create_course_page.image_upload_widget.upload_preview_image('/Users/a1111/PycharmProjects/PythonProject/autotests-ui/testdata/files/images.jpeg')
-    create_course_page.image_upload_widget.check_visible(is_image_uploaded=True)
+    create_course_page.image_upload_widget.upload_preview_image(
+        '/Users/a1111/PycharmProjects/PythonProject/autotests-ui/testdata/files/images.jpeg',
+        identifier='create-course-preview'
+    )
+    create_course_page.image_upload_widget.check_visible(is_image_uploaded=True, identifier='create-course-preview')
     create_course_page.create_course_form.fill(title='Playwright',
                                                estimated_time='2 weeks',
                                                description='Playwright',
