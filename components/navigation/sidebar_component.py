@@ -17,11 +17,11 @@ class SidebarComponent(BaseComponent):
         self.courses_list_item.check_visible('Courses', 'courses')
         self.dashboard_list_item.check_visible('Dashboard', 'dashboard')
 
-    def click_logout(self):
-        self.logout_list_item.navigate(re.compile(r".*/#/auth/login"))
+    def click_logout(self, identifier: str):
+        self.logout_list_item.navigate(re.compile(r".*/#/auth/login"), identifier=identifier)
 
-    def click_courses(self):
-        self.courses_list_item.navigate(re.compile(r".*/#/courses"))
+    def click_courses(self, identifier: str):
+        self.courses_list_item.navigate(re.compile(r".*/#/courses"), identifier=identifier)
 
-    def click_dashboard(self):
-        self.dashboard_list_item.navigate(re.compile(r".*/#/dashboard"))
+    def click_dashboard(self, identifier: str):
+        self.dashboard_list_item.navigate(re.compile(r".*/#/dashboard"), identifier=identifier)

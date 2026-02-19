@@ -3,9 +3,8 @@ from elements.button import Button
 from elements.link import Link
 from elements.text import Text
 from pages.base_page import BasePage
-from playwright.sync_api import Page, expect
-
-from playwright_authorization import wrong_email_or_pass_alert
+from playwright.sync_api import Page
+import re
 
 
 class LoginPage(BasePage):
@@ -25,6 +24,7 @@ class LoginPage(BasePage):
 
     def click_registration_link(self):
         self.registration_link.click()
+        self.check_current_url(re.compile(".*/#/auth/registration"))
 
     def check_visible_wrong_email_or_pass_alert(self):
         self.wrong_email_or_pass_alert.check_visible()
