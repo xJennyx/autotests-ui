@@ -20,6 +20,7 @@ class TestData(BaseModel):
     image_jpeg_file: FilePath
 
 
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
