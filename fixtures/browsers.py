@@ -40,7 +40,7 @@ def initialize_browser_state(playwright: Playwright):
 def page_with_state(request: SubRequest, initialize_browser_state, playwright: Playwright) -> Page:
     yield from initialize_playwright_page(
         playwright,
-        test_name=request.node.name,
+        test_name=request.node.name ,
         storage_state=settings.browser_state_file,
         browser_type=request.param
     )
