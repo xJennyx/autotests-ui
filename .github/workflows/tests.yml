@@ -1,5 +1,8 @@
 name: UI tests
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
