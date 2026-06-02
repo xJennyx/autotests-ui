@@ -5,7 +5,7 @@ name: UI tests
 on:
   push:
     branches:
-      - main  # Запускать workflow, когда будет сделан коммит в ветку main
+      - main  # Запускать workflow, когда будет сделан коммит в ветку main.
   pull_request:
     branches:
       - main  # Запускать workflow, когда будет сделан pull request в ветку main
