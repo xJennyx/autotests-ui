@@ -26,6 +26,19 @@ jobs:
         with:
           python-version: '3.11'  # Устанавливаем версию Python 3.11 (можно заменить на другую версию)
 
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Allure
+        run: |
+          curl -o allure.tgz -Ls https://github.com/allure-framework/allure2/releases/latest/download/allure-2.34.1.tgz
+          tar -zxvf allure.tgz
+          sudo mv allure-2.34.1 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
+
       # 3. Шаг для установки всех зависимостей проекта
       - name: Install dependencies
         run: |
@@ -47,13 +60,18 @@ jobs:
           ref: gh-pages  # Указываем ветку gh-pages для получения отчётов
           path: gh-pages  # Указываем путь для сохранения отчётов
 
-      # 6. Шаг для генерации и отображения отчёта Allure
-      - name: Generates Allure Report with history
-        uses: simple-elf/allure-report-action@v1.9  # Используем готовое решение из GitHub Marketplace для генерации Allure отчёта
-        if: always()  # Этот шаг тоже всегда выполняется
-        with:
-          allure_results: allure-results  # Указываем каталог с результатами тестов
-          allure_history: allure-history  # Указываем каталог для истории отчётов Allure
+#      # 6. Шаг для генерации и отображения отчёта Allure
+#      - name: Generates Allure Report with history
+#        uses: simple-elf/allure-report-action@v1.9  # Используем готовое решение из GitHub Marketplace для генерации Allure отчёта
+#        if: always()  # Этот шаг тоже всегда выполняется
+#        with:
+#          allure_results: allure-results  # Указываем каталог с результатами тестов
+#          allure_history: allure-history  # Указываем каталог для истории отчётов Allure
+
+      - name: Generate Allure report
+        if: always()
+        run: |
+          allure generate allure-results --clean -o allure-report
 
       # 7. Шаг для деплоя отчёта Allure на GitHub Pages, чтобы его можно было просматривать в браузере
 #      - name: Deploy report to Github Pages
