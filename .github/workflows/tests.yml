@@ -44,7 +44,15 @@ jobs:
         run: |
           pytest -m regression --alluredir=./allure-results --numprocesses 2  # Запускаем тесты, отмеченные как "regression", генерируем результаты для Allure
 
-      # 5. Получаем историю Allure из gh-pages
+      # 5. Установка Allure
+      - name: Install Allure
+        if: always()
+        run: |
+          wget -q -O allure-2.25.0.tgz https://github.com/allure-framework/allure2/releases/download/2.25.0/allure-2.25.0.tgz
+          tar -xzf allure-2.25.0.tgz -C /opt/
+          echo "/opt/allure-2.25.0/bin" >> $GITHUB_PATH
+
+      # 6. Получаем историю Allure из gh-pages
       - name: Get Allure history
         uses: actions/checkout@v4
         if: always()
@@ -53,16 +61,17 @@ jobs:
           ref: gh-pages
           path: gh-pages
 
-      # 6. Генерация отчёта Allure
+      # 7. Генерация отчёта Allure
       - name: Generate Allure Report
-        uses: simple-elf/allure-report-action@master
         if: always()
-        with:
-          allure-results: allure-results
-          allure-history: allure-history
-          gh-pages: gh-pages
+        run: |
+          mkdir -p allure-history
+          if [ -d gh-pages/history ]; then
+            cp -r gh-pages/history allure-history/history
+          fi
+          allure generate allure-results -o allure-history --clean
 
-      # 7. Публикация на GitHub Pages
+      # 8. Публикация на GitHub Pages
       - name: Deploy report to Github Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
