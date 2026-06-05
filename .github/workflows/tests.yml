@@ -71,10 +71,10 @@ jobs:
         if: always()  # Выполняется всегда, чтобы отчёт был даже при падении тестов
         run: |
           # Копируем историю из последнего прогона в allure-results (нужно для графика Trend)
-          mkdir -p allure-results/history
-          if [ -d gh-pages/latest/history ]; then
-            cp -r gh-pages/latest/history allure-results/history
-          fi
+            if [ -d gh-pages/latest/history ]; then
+              rm -rf allure-results/history
+              cp -r gh-pages/latest/history allure-results/history
+            fi
           # Генерируем отчёт
           allure generate allure-results -o allure-report --clean
           # Создаём структуру для деплоя
