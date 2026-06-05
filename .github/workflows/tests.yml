@@ -32,13 +32,6 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Install Allure
-        run: |
-          curl -o allure.tgz -Ls https://github.com/allure-framework/allure2/releases/latest/download/allure-2.34.1.tgz
-          tar -zxvf allure.tgz
-          sudo mv allure-2.34.1 /opt/allure
-          sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
-
       # 3. Шаг для установки всех зависимостей проекта
       - name: Install dependencies
         run: |
