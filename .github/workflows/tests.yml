@@ -26,11 +26,11 @@ jobs:
         with:
           python-version: '3.11'  # Устанавливаем версию Python 3.11 (можно заменить на другую версию)
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
+#      - name: Set up Java
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: temurin
+#          java-version: '17'
 
       # 3. Шаг для установки всех зависимостей проекта
       - name: Install dependencies
@@ -53,32 +53,32 @@ jobs:
           ref: gh-pages  # Указываем ветку gh-pages для получения отчётов
           path: gh-pages  # Указываем путь для сохранения отчётов
 
-#      # 6. Шаг для генерации и отображения отчёта Allure
-#      - name: Generates Allure Report with history
-#        uses: simple-elf/allure-report-action@v1.9  # Используем готовое решение из GitHub Marketplace для генерации Allure отчёта
-#        if: always()  # Этот шаг тоже всегда выполняется
-#        with:
-#          allure_results: allure-results  # Указываем каталог с результатами тестов
-#          allure_history: allure-history  # Указываем каталог для истории отчётов Allure
-
-      - name: Generate Allure report
-        if: always()
-        run: |
-          allure generate allure-results --clean -o allure-report
-
-      # 7. Шаг для деплоя отчёта Allure на GitHub Pages, чтобы его можно было просматривать в браузере
-#      - name: Deploy report to Github Pages
-#        if: always()  # Выполняется всегда, независимо от успеха других шагов
-#        uses: peaceiris/actions-gh-pages@v4  # Используем GitHub Action для публикации отчёта на GitHub Pages
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}  # Токен для аутентификации на GitHub
-#          publish_branch: gh-pages  # Указываем, что отчёт будет опубликован в ветке gh-pages
-#          publish_dir: allure-history  # Указываем папку, которая будет опубликована на GitHub Pages
-
-      - name: Deploy report to GitHub Pages
-        if: always()
-        uses: peaceiris/actions-gh-pages@v4
+      # 6. Шаг для генерации и отображения отчёта Allure
+      - name: Generates Allure Report with history
+        uses: simple-elf/allure-report-action@v1.9  # Используем готовое решение из GitHub Marketplace для генерации Allure отчёта
+        if: always()  # Этот шаг тоже всегда выполняется
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: allure-history
+          allure_results: allure-results  # Указываем каталог с результатами тестов
+          allure_history: allure-history  # Указываем каталог для истории отчётов Allure
+
+#      - name: Generate Allure report
+#        if: always()
+#        run: |
+#          allure generate allure-results --clean -o allure-report
+
+       #7. Шаг для деплоя отчёта Allure на GitHub Pages, чтобы его можно было просматривать в браузере
+      - name: Deploy report to Github Pages
+        if: always()  # Выполняется всегда, независимо от успеха других шагов
+        uses: peaceiris/actions-gh-pages@v4  # Используем GitHub Action для публикации отчёта на GitHub Pages
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # Токен для аутентификации на GitHub
+          publish_branch: gh-pages  # Указываем, что отчёт будет опубликован в ветке gh-pages
+          publish_dir: allure-history  # Указываем папку, которая будет опубликована на GitHub Pages
+
+#      - name: Deploy report to GitHub Pages
+#        if: always()
+#        uses: peaceiris/actions-gh-pages@v4
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_branch: gh-pages
+#          publish_dir: allure-history
