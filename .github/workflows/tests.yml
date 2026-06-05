@@ -73,7 +73,7 @@ jobs:
           # Генерируем отчёт
           allure generate allure-results -o allure-history --clean
 
-      # 8. Публикация на GitHub Pages
+      # 8. Публикация на GitHub Pages.
       - name: Deploy report to Github Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
