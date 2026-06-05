@@ -32,7 +32,7 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      # 3. Шаг для установки всех зависимостей проекта
+      # 3. Шаг для установки всех зависимостей проекта.
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip  # Обновляем pip до последней версии
