@@ -94,7 +94,7 @@ jobs:
           cd allure-history
           ls -d [0-9]* 2>/dev/null | sort -n | head -n -20 | xargs rm -rf
 
-      # 9. Шаг для деплоя отчёта Allure на GitHub Pages
+      # 9. Шаг для деплоя отчёта Allure на GitHub Pages.
       - name: Deploy report to Github Pages
         if: always()  # Выполняется всегда, чтобы отчёт был доступен даже при падении тестов.
         uses: peaceiris/actions-gh-pages@v4  # Публикуем отчёт на GitHub Pages
