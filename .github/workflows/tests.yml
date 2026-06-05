@@ -60,7 +60,7 @@ jobs:
       # 7. Шаг для получения истории отчётов Allure из ветки gh-pages
       - name: Get Allure history
         uses: actions/checkout@v4
-        if: always()  # Выполняется всегда, даже если тесты упали
+        if: always()  # Выполняется всегда, даже если тесты упали.
         continue-on-error: true  # Ошибка не прервёт workflow
         with:
           ref: gh-pages  # Клонируем ветку с историей отчётов
