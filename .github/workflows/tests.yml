@@ -55,7 +55,7 @@ jobs:
 
       # 6. Генерация отчёта Allure
       - name: Generate Allure Report
-        uses: afiore/action-allure-report@v1
+        uses: simple-elf/allure-report-action@master
         if: always()
         with:
           allure-results: allure-results
