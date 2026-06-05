@@ -65,10 +65,12 @@ jobs:
       - name: Generate Allure Report
         if: always()
         run: |
-          mkdir -p allure-history
+          # Копируем историю в allure-results ДО генерации
+          mkdir -p allure-results/history
           if [ -d gh-pages/history ]; then
-            cp -r gh-pages/history allure-history/history
+            cp -r gh-pages/history allure-results/history
           fi
+          # Генерируем отчёт
           allure generate allure-results -o allure-history --clean
 
       # 8. Публикация на GitHub Pages
