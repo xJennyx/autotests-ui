@@ -47,7 +47,7 @@ jobs:
       # 6. Шаг для запуска тестов с использованием pytest и генерации результатов Allure
       - name: Run Playwright tests with pytest and generate Allure results
         run: |
-          pytest -m regression --alluredir=./allure-results --numprocesses 2  # Запускаем тесты, отмеченные как "regression"
+          pytest -m regression --alluredir=./allure-results --numprocesses 2
 
       # 7. Шаг для получения истории отчётов Allure из ветки gh-pages
       - name: Get Allure history
