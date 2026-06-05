@@ -37,17 +37,25 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      # 4. Шаг для установки Allure — скачиваем бинарник и добавляем в систему
+            # 4. Шаг для установки всех зависимостей проекта
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip  # Обновляем pip до последней версии
+          pip install -r requirements.txt  # Устанавливаем зависимости из requirements.txt
+          playwright install --with-deps  # Устанавливаем браузеры для Playwright
+
+      # 5. Шаг для установки Allure — скачиваем бинарник и добавляем в систему
       - name: Install Allure
         run: |
           curl -sL -o allure.tgz https://github.com/allure-framework/allure2/releases/download/2.24.0/allure-2.24.0.tgz
           tar -xzf allure.tgz -C /opt/
           ln -s /opt/allure-2.24.0/bin/allure /usr/local/bin/allure
           allure --version
+
       # 6. Шаг для запуска тестов с использованием pytest и генерации результатов Allure
       - name: Run Playwright tests with pytest and generate Allure results
         run: |
-          pytest -m regression --alluredir=./allure-results --numprocesses 2
+          pytest -m regression --alluredir=./allure-results --numprocesses 2  # Запускаем тесты, отмеченные как "regression"
 
       # 7. Шаг для получения истории отчётов Allure из ветки gh-pages
       - name: Get Allure history
