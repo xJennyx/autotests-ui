@@ -92,9 +92,7 @@ jobs:
           cp -r allure-report allure-history/latest
           # Оставляем только последние 20 прогонов, старые удаляем
           cd allure-history
-          ls -d [0-9]* 2>/dev/null | sort -n | head -n -20 | xargs rm -rf
-
-      
+          ls -d [0-9]* 2>/dev/null | sort -n | head -n -20 | xargs rm -rf      
 
       - name: Upload tests result by run-tests
         -run: echo hello /artifact/allure-result.txt
@@ -104,15 +102,14 @@ jobs:
           path: /artifact/allure-result.txt
 
   publish-report:
+    needs: run-tests
+    runs-on: ubuntu-latest
     steps:
-      - name: Publish Report to GitHub Pages
-        needs: run-tests
-        runs-on: ubuntu-latest
-        step:
-          - name: Donwload tests result
-            uses: actions/download-artifact@v5
-            with:
-              name: my-artifact
+
+      - name: Donwload tests result
+        uses: actions/download-artifact@v5
+        with:
+          name: my-artifact
 
       # 9. Шаг для деплоя отчёта Allure на GitHub Pages.
       - name: Deploy report to Github Pages
