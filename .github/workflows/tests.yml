@@ -123,3 +123,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}  # Токен для аутентификации
           publish_branch: gh-pages  # Ветка для публикации
           publish_dir: allure-history  # Папка с отчётом для публикации
+          keep_files: true
