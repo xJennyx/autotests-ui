@@ -95,7 +95,9 @@ jobs:
           ls -d [0-9]* 2>/dev/null | sort -n | head -n -20 | xargs rm -rf      
 
       - name: Create test result
-        run: echo hello > artifact/allure-result.txt
+        run: |
+          mkdir -p artifact
+          echo hello > artifact/allure-result.txt
 
       - name: Upload tests result
         uses: actions/upload-artifact@v4
