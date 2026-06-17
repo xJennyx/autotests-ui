@@ -52,7 +52,7 @@ jobs:
           ln -s /opt/allure-2.24.0/bin/allure /usr/local/bin/allure
           allure --version
 
-      # 6. Шаг для запуска тестов с использованием pytest и генерации результатов Allure
+      # 6. Шаг для запуска тестов с использованием pytest и генерации результатов Allure.
       - name: Run Playwright tests with pytest and generate Allure results
         run: |
           pytest -m regression --alluredir=./allure-results --numprocesses 2  # Запускаем тесты, отмеченные как "regression"
