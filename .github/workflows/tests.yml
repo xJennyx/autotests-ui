@@ -1,167 +1,17 @@
-# Имя вашего workflow, которое будет отображаться в интерфейсе GitHub Actions
 name: UI tests
 
-# Указываем, когда будет запускаться данный workflow
 on:
   push:
     branches:
-      - main  # Запускать workflow, когда будет сделан коммит в ветку main
-  pull_request:
-    branches:
-      - main  # Запускать workflow, когда будет сделан pull request в ветку main
+      - main
+    pull_request:
+      - main
 
-# Даём токену право на запись (нужно для деплоя в gh-pages)
-permissions:
-  contents: write
 
-# Определяем все шаги, которые должны быть выполнены в рамках работы с тестами
 jobs:
   run-tests:
-    runs-on: ubuntu-latest  # Указываем, что тесты будут запускаться на последней версии Ubuntu
-
-    steps:
-      # 1. Шаг, который будет клонировать ваш репозиторий на машину GitHub Actions
-      - name: Check out repository
-        uses: actions/checkout@v4  # Используем GitHub Action для клонирования репозитория
-
-      # 2. Шаг для установки Python на виртуальной машине
-      - name: Set up Python
-        uses: actions/setup-python@v4  # Используем GitHub Action для установки Python
-        with:
-          python-version: '3.11'  # Устанавливаем версию Python 3.11
-
-      # 3. Шаг для установки Java (нужна для Allure)
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-            # 4. Шаг для установки всех зависимостей проекта
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip  # Обновляем pip до последней версии
-          pip install -r requirements.txt  # Устанавливаем зависимости из requirements.txt
-          playwright install --with-deps  # Устанавливаем браузеры для Playwright
-
-      # 5. Шаг для установки Allure — скачиваем бинарник и добавляем в систему
-      - name: Install Allure
-        run: |
-          curl -sL -o allure.tgz https://github.com/allure-framework/allure2/releases/download/2.24.0/allure-2.24.0.tgz
-          tar -xzf allure.tgz -C /opt/
-          ln -s /opt/allure-2.24.0/bin/allure /usr/local/bin/allure
-          allure --version
-
-      # 6. Шаг для запуска тестов с использованием pytest и генерации результатов Allure.
-      - name: Run Playwright tests with pytest and generate Allure results
-        run: |
-          pytest -m regression --alluredir=./allure-results --numprocesses 2  # Запускаем тесты, отмеченные как "regression"
-
-      - name: Restore Coverage history
-        uses: actions/cache/restore@v5
-        with:
-          path: coverage-history.json
-          key: coverage-history-${{ github.run_id }}
-          restore-keys: |
-            coverage-history-
-
-      - name: Generate Coverage report
-        run: |
-          ui-coverage-tool save-report
-
-      - name: Cache Coverage history
-        if: always()
-        uses: actions/cache/save@v5
-        with:
-          path: coverage-history.json
-          key: coverage-history-${{ github.run_id }}
-
-      - name: Upload Coverage results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage.html
-          retention-days: 1
-
-      - name: Add executor info for trend
-        if: always()
-        run: |
-          cat > allure-results/executor.json << EOF
-          {
-            "name": "GitHub Actions",
-            "type": "github",
-            "reportName": "Run #${{ github.run_number }}",
-            "buildOrder": ${{ github.run_number }},
-            "buildName": "GitHub Actions Run #${{ github.run_number }}",
-            "buildUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-            "reportUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          }
-          EOF
-
-      # 7. Шаг для получения истории отчётов Allure из ветки gh-pages
-      - name: Get Allure history
-        uses: actions/checkout@v4
-        if: always()  # Выполняется всегда, даже если тесты упали.
-        continue-on-error: true  # Ошибка не прервёт workflow
-        with:
-          ref: gh-pages  # Клонируем ветку с историей отчётов
-          path: gh-pages
-
-      # 8. Шаг для генерации отчёта Allure с сохранением истории прогонов
-      - name: Generate Allure Report
-        if: always()  # Выполняется всегда, чтобы отчёт был даже при падении тестов
-        run: |
-          # Копируем историю из последнего прогона в allure-results (нужно для графика Trend)
-            if [ -d gh-pages/latest/history ]; then
-              rm -rf allure-results/history
-              cp -r gh-pages/latest/history allure-results/history
-            fi
-          # Генерируем отчёт
-          allure generate allure-results -o allure-report --clean
-          # Создаём структуру для деплоя
-          mkdir -p allure-history
-          # Копируем все предыдущие прогоны
-          if [ -d gh-pages ]; then
-            cp -r gh-pages/. allure-history/ 2>/dev/null || true
-          fi
-          # Сохраняем текущий прогон в папку с номером запуска
-          RUN_NUM=${{ github.run_number }}
-          rm -rf allure-history/$RUN_NUM
-          cp -r allure-report allure-history/$RUN_NUM
-          # Обновляем latest — всегда указывает на последний отчёт
-          rm -rf allure-history/latest
-          cp -r allure-report allure-history/latest
-          # Оставляем только последние 20 прогонов, старые удаляем
-          cd allure-history
-          ls -d [0-9]* 2>/dev/null | sort -n | head -n -20 | xargs rm -rf      
-
-      - name: Upload Allure history as artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-history-artifact
-          path: allure-history
-          retention-days: 1
-
-  publish-report:
-    needs: run-tests
     runs-on: ubuntu-latest
+
     steps:
-
-      - name: Download Allure history
-        if: always()
-        uses: actions/download-artifact@v4
-        with:
-          name: allure-history-artifact
-          path: allure-history
-
-      # 9. Шаг для деплоя отчёта Allure на GitHub Pages.
-      - name: Deploy report to Github Pages
-        if: always()  # Выполняется всегда, чтобы отчёт был доступен даже при падении тестов.
-        uses: peaceiris/actions-gh-pages@v4  # Публикуем отчёт на GitHub Pages
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}  # Токен для аутентификации
-          publish_branch: gh-pages  # Ветка для публикации
-          publish_dir: allure-history  # Папка с отчётом для публикации
-          keep_files: true
+      - name: Check out repository
+        uses: actions/checkout@v7
