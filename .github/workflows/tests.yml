@@ -61,6 +61,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download Allure results
+        env:
+          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
         uses: actions/download-artifact@v5
         with:
           name: allure-results
