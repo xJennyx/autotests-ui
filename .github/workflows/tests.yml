@@ -31,13 +31,7 @@ jobs:
         run: |
           pytest -m regression --alluredir=allure-results --numprocesses 2
 
-      - name: Get Allure history
-        uses: actions/checkout@v7
-        if: always()
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: gh-pages
+
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
@@ -55,6 +49,14 @@ jobs:
         with:
           name: allure-results
           path: allure-results
+
+      - name: Get Allure history
+        uses: actions/checkout@v7
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
 
       - name: Generates Allure Report with history
         uses: simple-elf/allure-report-action@master
